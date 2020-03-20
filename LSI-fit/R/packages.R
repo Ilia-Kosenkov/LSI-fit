@@ -7,7 +7,9 @@ library(forcats)      # Dealing with factors
 library(readr)        # Advanced I/O
 library(ggplot2)      # Graphics
 library(stringr)      # String manipulations & regex
-
+                      #
+library(RColorBrewer) # Color palette
+                      #
 library(rlang)        # Basic R library
 library(vctrs)        # Basic type library
                       #
