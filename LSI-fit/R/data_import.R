@@ -8,7 +8,7 @@ import_data <- function(dir = fs::path("data")) {
     fs::dir_ls(dir, glob = "*.csv") %>%
     # Parse each files' name and extract filter letter; use as names
     set_names(str_extract(., "(?<=_)[bvr](?=\\.csv)")) %>%
-    # Read each file, add a column `Filter` with the letter from file name;
+    # Read each file, add a column `Filter` with the letter from the file name;
     # collapse into one data frame
     imap_dfr(~read_csv(.x, col_types = cols()) %>% mutate(Filter = .y)) %>%
     # Rename/change filter letters
@@ -24,7 +24,7 @@ import_data <- function(dir = fs::path("data")) {
         names_pattern = "([QU])(obs|err)",
         names_to = c("Type", ".value")) %>%
     # Now `Type` indicates wether value is `Q` or `U`
-    # and `Filter` indicates which filter [BVR]
+    # and `Filter` indicates which filter [BVR] is used
     mutate(Type = as_factor(Type)) %>%
     rename(Obs = obs, Err = err)
 }
