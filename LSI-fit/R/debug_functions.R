@@ -1,7 +1,7 @@
 view_diagram <- function(
     mdl,
     file = paste0(fs::file_temp("diagrammer_"), ".pdf")) {
-    dir <- fs::path_dir()
+    dir <- fs::path_dir(file)
     if (!fs::dir_exists(dir))
         fs::dir_create(dir)
     DiagrammeR::export_graph(
