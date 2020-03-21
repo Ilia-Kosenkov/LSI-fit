@@ -43,5 +43,5 @@ fit_with_greta <- function(
 
     mdl <- greta::model(i, e, omega, lambda_p, q_0, u_0, tau, phi_p)
 
-    greta::mcmc(mdl, n_samples = 2.5e4) %>% tidy_draws %>% spread_draws
+    greta::mcmc(mdl, n_samples = 2.5e3) %>% tidy_draws %>% spread_draws
 }
