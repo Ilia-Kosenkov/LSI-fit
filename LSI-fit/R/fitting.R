@@ -6,7 +6,7 @@ fit_with_greta <- function(
     lambda_p = vec_c(200, 250),
     q_0 = vec_c(-0.5, 0.5),
     u_0 = vec_c(-2, -1),
-    tau = vec_c(1e-4, 1e-2),
+    tau = vec_c(1e-4, 1e-1),
     phi_p = vec_c(0, 360)) {
     # Trying only R filter for now
 
@@ -43,5 +43,5 @@ fit_with_greta <- function(
 
     mdl <- greta::model(i, e, omega, lambda_p, q_0, u_0, tau, phi_p)
 
-    view_diagram(mdl, fs::path("output", "diagram.pdf") %>% file_out)
+    greta::mcmc(mdl, n_samples = 2.5e4) %>% tidy_draws %>% spread_draws
 }

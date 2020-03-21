@@ -6,4 +6,8 @@ plan <- drake::drake_plan(
     fit_result = fit_with_greta(data)
     )
 
-drake::drake_config(plan, console_log_file = stdout(), verbose = 4L, log_progress = TRUE)
+drake::drake_config(
+    plan,
+    log_make = stdout(),
+    verbose = 4L,
+    log_progress = TRUE)

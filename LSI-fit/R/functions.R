@@ -96,3 +96,13 @@ model_polarization <- function(
 }
 
 `%~%` <- greta::`distribution<-`
+
+spread_draws <- function(data) {
+    pivot_longer(
+        data,
+        cols = matches("^[^\\.]"),
+        names_to = ".var",
+        values_to = ".obs") %>%
+    mutate(across(c(.var, .chain), as_factor))
+}
+

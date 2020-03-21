@@ -32,3 +32,14 @@ debug_kepler_eq_plot <- function() {
         scale_x_sci() +
         scale_y_sci()
 }
+
+debug_density_plot <- function(data = readd(fit_result)) {
+    ggplot_sci(
+            data,
+            aes(x = .obs, group = .chain, col = .chain)) +
+        geom_density() +
+        scale_x_sci() +
+        scale_y_sci() +
+        facet_wrap(vars(.var), scales = "free")
+
+}
