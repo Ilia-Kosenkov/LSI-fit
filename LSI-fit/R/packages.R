@@ -14,10 +14,15 @@ library(rlang)        # Basic R library
 library(vctrs)        # Basic type library
                       #
 library(primitiveR)   # Tools to bridge {tidyverse} and {vctrs} in dev mode
-library(rastro)       # {vctrs}-based types like <rastro_degr>
 library(sciplotr)     # Better axes/scales & facet for {ggplot2}
                       #
 library(drake)        # Execution orchestration & reproducibility
+                      #
+library(tidybayes)    # Helpers for mcmc chains
+
+reticulate::use_condaenv("r-tensorflow", required = TRUE)
+library(greta)        # Tensorflow-based fitting backend
+
 
 source_all <- function() {
     fs::path("R") %>%

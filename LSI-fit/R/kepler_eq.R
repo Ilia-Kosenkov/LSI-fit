@@ -6,28 +6,12 @@
 #' See https://en.wikipedia.org/wiki/Kepler's_equation#Numerical_approximation_of_inverse_problem
 #' @return Vector of size \code{vec_size(M)} of eccentric anomalies (E)
 solve_E <- function(M, e = 0) {
-    e <- vec_cast(vec_assert(e, size = 1L), double())
-    if (e < 0 || e > 1)
-        abort(glue_fmt_chr(
-            "`e` should be within [0, 1] interval (provided {e})"),
-            "lsi_fit_invalid_arg")
-
-    M <- vec_cast(M, double())
-    n <- vec_size(M)
-
-    E <- if(e >= 0.8) vec_repeat(pi, n) else M
-
-    threshold <- 2 * .Machine$double.eps
-
-    err <- threshold * 10
+    # Code greatly simplified to work with {greta}
+    E <- M
     counter <- 0L
 
-    # Iterations stop either if the desired precision is reached
-    # or if the number of iterations exceeds 30
-    while (err > threshold & counter < 30L) {
-        temp <- E - (E - e * sin(E) - M) / (1 - e * cos(E))
-        err <- sqrt(sum((E - temp) ^ 2) / n)
-        E <- temp
+    while (counter < 5L) {
+        E <- E - (E - e * sin(E) - M) / (1 - e * cos(E))
         counter <- counter + 1L
     }
     return(E)

@@ -6,6 +6,8 @@
 import_data <- function(dir = fs::path("data")) {
     # List csvs in the directory
     fs::dir_ls(dir, glob = "*.csv") %>%
+    # {drake} dependencies
+    map(file_in) %>%
     # Parse each files' name and extract filter letter; use as names
     set_names(str_extract(., "(?<=_)[bvr](?=\\.csv)")) %>%
     # Read each file, add a column `Filter` with the letter from the file name;
