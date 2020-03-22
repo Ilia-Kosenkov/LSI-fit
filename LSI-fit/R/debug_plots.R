@@ -33,7 +33,7 @@ debug_kepler_eq_plot <- function() {
         scale_y_sci()
 }
 
-debug_density_plot <- function(data = readd(fit_result)) {
+debug_density_plot <- function(data = drake::readd(fit_result)) {
     ggplot_sci(
             data,
             aes(x = .obs, group = .chain, col = .chain)) +
@@ -42,4 +42,46 @@ debug_density_plot <- function(data = readd(fit_result)) {
         scale_y_sci() +
         facet_wrap(vars(.var), scales = "free")
 
+}
+
+debug_param_source <- function() {
+    tribble(~ .var, ~ .obs,
+            "e", 0.1,
+            "i", deg_2_rad(85.8),
+            "omega", deg_2_rad(-123.1),
+            "lambda_p", deg_2_rad(204.4),
+            "tau", 0.03,
+            "q_0",  0.04,
+            "u_0",  -1.23,
+            "phi_p", deg_2_rad(0)) %>%
+        bind_rows(.) %>%
+        mutate(.chain = as_factor(1L), .var = as_factor(.var))
+}
+
+
+debug_data_plot_with_model <- function() {
+    drake::readd(data) %>%
+        filter(Filter %==% "R") -> data
+
+    debug_param_source() %>% compute_stats() %>% get_averages() -> params
+
+    solve_E(2 * pi * seq(0, 1, by = 0.005), params$e)
+
+    prediction <- reconstruct_predictions(
+        2 * pi * seq(0, 1, by = 0.005),
+        debug_param_source()
+        #drake::readd(fit_result)
+        ) %>% mutate(Phase = Phase / 2 / pi)
+
+    ggplot_sci(
+            data,
+            aes(x = Phase, y = Obs, ymin = Obs - Err, ymax = Obs + Err)) +
+        geom_pointrange() +
+        scale_x_sci() +
+        scale_y_sci() +
+        geom_line(aes(group = Chain, col = Chain), data = prediction) +
+        facet_sci(vars(Type), scales = "free") -> plt
+
+    #return(NULL)
+    return(plt)
 }
