@@ -20,9 +20,10 @@ library(drake)        # Execution orchestration & reproducibility
                       #
 library(tidybayes)    # Helpers for mcmc chains
 
-reticulate::use_condaenv("r-tensorflow", required = TRUE)
-library(greta)        # Tensorflow-based fitting backend
-
+if (!interactive()) {
+    reticulate::use_condaenv("r-tensorflow", required = TRUE)
+    library(greta)        # Tensorflow-based fitting backend
+}
 
 source_all <- function() {
     fs::path("R") %>%
