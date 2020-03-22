@@ -3,7 +3,8 @@ source_all()
 
 plan <- drake::drake_plan(
     data = import_data(),
-    fit_result = fit_with_greta(data)
+    #fit_result = fit_with_greta(data)
+    fit_result_all = fit_with_greta_all(data)
     )
 
 drake::drake_config(
