@@ -1,13 +1,13 @@
 fit_with_greta <- function(
     data,
-    i = vec_c(40, 100),
+    i = vec_c(70, 110),
     e = vec_c(0, 0.25),
     omega = vec_c(-180, -90),
     lambda_p = vec_c(200, 280),
     q_0 = vec_c(-0.5, 0.5),
     u_0 = vec_c(-2, -1),
     tau = vec_c(1e-4, 1e-1),
-    phi_p = vec_c(0, 90)) {
+    phi_p = vec_c(0, 270)) {
     # Trying only R filter for now
 
     data %<>% filter(Filter %==% "R")
