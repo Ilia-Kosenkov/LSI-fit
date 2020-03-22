@@ -44,6 +44,22 @@ debug_density_plot <- function(data = drake::readd(fit_result)) {
 
 }
 
+debug_trace_plot <- function(data = drake::readd(fit_result)) {
+    data %>% pull(.iteration) %>% unique %>% sample(5e2) -> ids
+
+    ggplot_sci(
+        data %>% filter(.iteration %vin% ids),
+        aes(x = .iteration,
+            y = .obs,
+            group = .chain,
+            col = .chain)) +
+        geom_line(alpha = 0.5) +
+        geom_smooth() +
+        scale_x_sci() +
+        scale_y_sci() +
+        facet_wrap(~.var, scales = "free_y")
+}
+
 debug_param_source <- function() {
     tribble(~ .var, ~ .obs,
             "e", 0.1,
@@ -69,8 +85,8 @@ debug_data_plot_with_model <- function() {
 
     prediction <- reconstruct_predictions(
         2 * pi * seq(0, 1, by = 0.005),
-        debug_param_source()
-        #drake::readd(fit_result)
+        #debug_param_source()
+        drake::readd(fit_result)
         ) %>% mutate(Phase = Phase / 2 / pi)
 
     ggplot_sci(
