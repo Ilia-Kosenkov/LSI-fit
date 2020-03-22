@@ -1,13 +1,13 @@
 fit_with_greta <- function(
     data,
-    i = vec_c(40, 90),
-    e = vec_c(0, 0.5),
+    i = vec_c(40, 100),
+    e = vec_c(0, 0.25),
     omega = vec_c(-180, -90),
-    lambda_p = vec_c(200, 250),
+    lambda_p = vec_c(200, 280),
     q_0 = vec_c(-0.5, 0.5),
     u_0 = vec_c(-2, -1),
     tau = vec_c(1e-4, 1e-1),
-    phi_p = vec_c(0, 360)) {
+    phi_p = vec_c(0, 90)) {
     # Trying only R filter for now
 
     data %<>% filter(Filter %==% "R")
@@ -43,5 +43,5 @@ fit_with_greta <- function(
 
     mdl <- greta::model(i, e, omega, lambda_p, q_0, u_0, tau, phi_p)
 
-    greta::mcmc(mdl, n_samples = 2.5e3) %>% tidy_draws %>% spread_draws
+    greta::mcmc(mdl, warmup = 5e3, n_samples = 2e4) %>% tidy_draws %>% spread_draws
 }
