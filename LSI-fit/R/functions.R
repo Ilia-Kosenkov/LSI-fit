@@ -77,7 +77,7 @@ model_polarization <- function(
 ) {
     M <- phi - phi_p
     E <- solve_E(M = M, e = e)
-    l_lp <- 2 * atan(((1 + e) / (1 - e)) ^ 0.5 * tan(E))
+    l_lp <- 2 * atan(((1 + e) / (1 - e)) ^ 0.5 * tan(E / 2))
 
     lambda <- l_lp + lambda_p
 
@@ -105,4 +105,3 @@ spread_draws <- function(data) {
         values_to = ".obs") %>%
     mutate(across(c(.var, .chain), as_factor))
 }
-
