@@ -79,8 +79,6 @@ debug_data_plot_with_model <- function() {
     drake::readd(data) %>%
         filter(Filter %==% "R") -> data
 
-    debug_param_source() %>% compute_stats() %>% get_averages() -> params
-
     solve_E(2 * pi * seq(0, 1, by = 0.005), params$e)
 
     prediction <- reconstruct_predictions(
@@ -101,3 +99,67 @@ debug_data_plot_with_model <- function() {
     #return(NULL)
     return(plt)
 }
+
+debug_data_plot_with_model_all <- function(
+    data = drake::readd(data),
+    params = drake::readd(fit_result_all)
+) {
+    data %>%
+        group_split(Filter) %>%
+        vmap(select, Phase, Filter) -> phases
+
+
+    params %>% pull(.var) %>% unique %>% fct_get -> vars
+    common_vars <- vars[str_which(vars, "\\]$", TRUE)]
+    vec_seq_along(phases) %>%
+        vmap(~vec_c(common_vars, str_subset(vars, glue_fmt_chr("\\[{.x},\\ ?1\\]$")))) %>%
+        vmap(~filter(params, .var %vin% .x)) %>%
+        vmap(~mutate(.x, .var = as_factor(str_replace(.var, "\\[\\d,\\ ?\\d\\]$", "")))) -> split_params
+
+
+    vmap2_pt(phases, split_params,
+         function(phase_data, pars) {
+             reconstruct_predictions(
+                     2 * pi * seq(0, 1, by = 0.005),
+                     pars) %>%
+                 mutate(Phase = Phase / 2 / pi,
+                        Filter = phase_data %>% pull(Filter) %>% vec_slice(1L))
+         }) -> prediction
+
+
+
+    ggplot_sci(
+            data,
+            aes(x = Phase, y = Obs,
+                ymin = Obs - Err, ymax = Obs + Err,
+                col = Filter, fill = Filter,
+                shape = Filter)) +
+        geom_pointrange() +
+        geom_line(aes(group = fct_cross(Chain, Filter), linetype = Chain), data = prediction) +
+        scale_x_sci() +
+        scale_y_sci() +
+        scale_color_manual(
+                breaks = vec_c("B", "V", "R"),
+                values = vec_c("blue", "green", "red")) +
+        scale_fill_manual(
+                breaks = vec_c("B", "V", "R"),
+                values = vec_c("blue", "green", "red")) +
+        scale_shape_manual(
+                breaks = vec_c("B", "V", "R"),
+                values = vec_c(21L, 22L, 23L)) +
+        facet_sci(vars(Type), scales = "free")
+
+    #ggplot_sci(
+            #data,
+            #aes(x = Phase, y = Obs, ymin = Obs - Err, ymax = Obs + Err)) +
+        #geom_pointrange() +
+        #scale_x_sci() +
+        #scale_y_sci() +
+        #geom_line(aes(group = Chain, col = Chain), data = prediction) +
+        #facet_sci(vars(Type), scales = "free") -> plt
+
+    ##return(NULL)
+    #return(plt)
+}
+
+debug_data_plot_with_model_all() %>% print
