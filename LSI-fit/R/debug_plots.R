@@ -149,17 +149,4 @@ debug_data_plot_with_model_all <- function(
                 values = vec_c(21L, 22L, 23L)) +
         facet_sci(vars(Type), scales = "free")
 
-    #ggplot_sci(
-            #data,
-            #aes(x = Phase, y = Obs, ymin = Obs - Err, ymax = Obs + Err)) +
-        #geom_pointrange() +
-        #scale_x_sci() +
-        #scale_y_sci() +
-        #geom_line(aes(group = Chain, col = Chain), data = prediction) +
-        #facet_sci(vars(Type), scales = "free") -> plt
-
-    ##return(NULL)
-    #return(plt)
 }
-
-debug_data_plot_with_model_all() %>% print
