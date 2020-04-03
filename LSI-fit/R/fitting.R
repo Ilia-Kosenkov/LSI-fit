@@ -55,7 +55,11 @@ fit_with_greta_all <- function(
     q_0 = vec_c(-0.5, 0.5),
     u_0 = vec_c(-2, -1),
     tau = vec_c(1e-4, 1e-1),
-    phi_p = vec_c(170, 270)) {
+    phi_p = vec_c(170, 270),
+    q_func = q_int,
+    u_func = u_int,
+    n_warmup = 1e3,
+    n_samples = 1e4) {
     # Trying only R filter for now
 
     data %>%
@@ -92,7 +96,9 @@ fit_with_greta_all <- function(
            omega = omega,
            lambda_p = lambda_p,
            q_0 = q_0[j],  # <- per-filter
-           u_0 = u_0[j]   # <- per-filter
+           u_0 = u_0[j], # <- per-filter
+           q_func = q_func,
+           u_func = u_func
            ) -> pred
 
         obs %~% greta::normal(pred, err)
@@ -100,5 +106,6 @@ fit_with_greta_all <- function(
 
     mdl <- greta::model(i, e, omega, lambda_p, q_0, u_0, tau, phi_p)
 
-    greta::mcmc(mdl, warmup = 5e3, n_samples = 2e4) %>% tidy_draws %>% spread_draws
+    greta::mcmc(mdl, warmup = n_warmup, n_samples = n_samples) %>%
+        tidy_draws %>% spread_draws
 }

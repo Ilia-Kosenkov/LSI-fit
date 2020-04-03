@@ -102,7 +102,8 @@ debug_data_plot_with_model <- function() {
 
 debug_data_plot_with_model_all <- function(
     data = drake::readd(data),
-    params = drake::readd(fit_result_all)
+    params = drake::readd(fit_result_all),
+    q_func = q_int, u_func = u_int
 ) {
     data %>%
         group_split(Filter) %>%
@@ -112,16 +113,23 @@ debug_data_plot_with_model_all <- function(
     params %>% pull(.var) %>% unique %>% fct_get -> vars
     common_vars <- vars[str_which(vars, "\\]$", TRUE)]
     vec_seq_along(phases) %>%
-        vmap(~vec_c(common_vars, str_subset(vars, glue_fmt_chr("\\[{.x},\\ ?1\\]$")))) %>%
+        vmap(~vec_c(
+            common_vars,
+            str_subset(vars, glue_fmt_chr("\\[{.x},\\ ?1\\]$")))) %>%
         vmap(~filter(params, .var %vin% .x)) %>%
-        vmap(~mutate(.x, .var = as_factor(str_replace(.var, "\\[\\d,\\ ?\\d\\]$", "")))) -> split_params
+        vmap(~mutate(
+            .x,
+            .var = as_factor(str_replace(
+                .var,
+                "\\[\\d,\\ ?\\d\\]$", "")))) -> split_params
 
 
     vmap2_pt(phases, split_params,
          function(phase_data, pars) {
              reconstruct_predictions(
                      2 * pi * seq(0, 1, by = 0.005),
-                     pars) %>%
+                     pars,
+                     q_func = q_func, u_func = u_func) %>%
                  mutate(Phase = Phase / 2 / pi,
                         Filter = phase_data %>% pull(Filter) %>% vec_slice(1L))
          }) -> prediction
@@ -135,7 +143,9 @@ debug_data_plot_with_model_all <- function(
                 col = Filter, fill = Filter,
                 shape = Filter)) +
         geom_pointrange() +
-        geom_line(aes(group = fct_cross(Chain, Filter), linetype = Chain), data = prediction) +
+        geom_line(
+            aes(group = fct_cross(Chain, Filter), linetype = Chain),
+            data = prediction) +
         scale_x_sci() +
         scale_y_sci() +
         scale_color_manual(

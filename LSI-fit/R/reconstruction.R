@@ -13,7 +13,8 @@ get_averages <- function(stats) {
 
 reconstruct_predictions <- function(
     phi,
-    draws = drake::readd(fit_result)) {
+    draws = drake::readd(fit_result),
+    q_func = q_int, u_func = u_int) {
 
     stats <- compute_stats(draws) %>%
         group_split(.chain)
@@ -31,7 +32,9 @@ reconstruct_predictions <- function(
                 omega = vars$omega,
                 lambda_p = vars$lambda_p,
                 q_0 = vars$q_0,
-                u_0 = vars$u_0)
+                u_0 = vars$u_0,
+                q_func = q_func,
+                u_func = u_func)
 
             tibble(
                 Phase = vec_repeat(phi, times = 2L),

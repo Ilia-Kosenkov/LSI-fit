@@ -50,7 +50,7 @@ q_rotate <- function(
     u_int,
     omega,
     q_0) {
-    q_int * cos(omega) - u_int * sin(omega) + q_0
+    q_int * cos(2 * omega) - u_int * sin(2 * omega) + q_0
 }
 
 u_rotate <- function(
@@ -58,7 +58,7 @@ u_rotate <- function(
     u_int,
     omega,
     u_0) {
-    q_int * sin(omega) + u_int * cos(omega) + u_0
+    q_int * sin(2 * omega) + u_int * cos(2 * omega) + u_0
 }
 
 rad_2_deg <- function(x) 180 * x / pi
@@ -73,7 +73,9 @@ model_polarization <- function(
     omega,
     lambda_p,
     q_0,
-    u_0
+    u_0,
+    q_func = q_int,
+    u_func = u_int
 ) {
     M <- phi - phi_p
     E <- solve_E(M = M, e = e)
@@ -81,11 +83,11 @@ model_polarization <- function(
 
     lambda <- l_lp + lambda_p
 
-    q_int <- q_int(
+    q_int <- q_func(
         lambda = lambda, lambda_p = lambda_p,
         tau = tau, e = e, i = i)
 
-    u_int <- u_int(
+    u_int <- u_func(
         lambda = lambda, lambda_p = lambda_p,
         tau = tau, e = e, i = i)
 
@@ -104,4 +106,28 @@ spread_draws <- function(data) {
         names_to = ".var",
         values_to = ".obs") %>%
     mutate(across(c(.var, .chain), as_factor))
+}
+
+q_int_2 <- function(
+    lambda,
+    lambda_p,
+    tau,
+    e,
+    i
+) {
+    3 / 16 * tau *
+    (sin(i) ^ 2 - (1 + cos(i) ^ 2) * cos(2 * lambda)) *
+    (1 + e * cos(lambda - lambda_p)) ^ 2
+}
+
+u_int_2 <- function(
+    lambda,
+    lambda_p,
+    tau,
+    e,
+    i
+) {
+    3 / 8 * tau *
+    (-cos(i) * sin(2 * lambda)) *
+    (1 + e * cos(lambda - lambda_p)) ^ 2
 }
