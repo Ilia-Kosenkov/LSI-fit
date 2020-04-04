@@ -26,15 +26,15 @@ plan <- drake::drake_plan(
             #n_samples = 2.5e4),
     fit_3_result_all = fit_with_greta_all(
             data,
-            i = vec_c(0, 100),
-            e = vec_c(1e-3, 0.35),
-            lambda_p = vec_c(0, 270),
-            omega = vec_c(0, 180),
-            phi_p = vec_c(0, 360),
+            i = vec_c(60, 100),
+            e = vec_c(0, 0.5),
+            lambda_p = vec_c(170, 280),
+            omega = vec_c(45, 180),
+            phi_p = vec_c(90, 360),
             q_func = q_int_2, u_func = u_int_2,
-            tau = vec_c(0, 10),
-            n_warmup = 7.5e3,
-            n_samples = 5.7e4)
+            tau = vec_c(0, 0.35),
+            n_warmup = 5e3,
+            n_samples = 5e4)
     )
 
 drake::drake_config(
