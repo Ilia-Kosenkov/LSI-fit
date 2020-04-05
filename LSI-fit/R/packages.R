@@ -6,8 +6,10 @@ library(purrr)        # Functional-style methods
 library(forcats)      # Dealing with factors
 library(readr)        # Advanced I/O
 library(ggplot2)      # Graphics
+library(grid)         #
+library(gridExtra)    #
+library(gtable)       #
 library(stringr)      # String manipulations & regex
-                      #
 library(RColorBrewer) # Color palette
                       #
 library(rlang)        # Basic R library
@@ -18,7 +20,8 @@ library(sciplotr)     # Better axes/scales & facet for {ggplot2}
                       #
 library(drake)        # Execution orchestration & reproducibility
                       #
-library(tidybayes)    # Helpers for mcmc chains
+library(tidybayes) # Helpers for mcmc chains
+
 
 if (!interactive()) {
     reticulate::use_condaenv("r-tensorflow", required = TRUE)
