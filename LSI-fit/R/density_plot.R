@@ -4,9 +4,9 @@ ltys <- vec_c(1, 1, 2, 4)
 
 cnt_colors_s <- scales::viridis_pal()(4)
 cnt_colors_g <- vec_c(
-    brewer.pal(4, "OrRd") %>% rev,
-    brewer.pal(4, "BuGn") %>% rev,
-    brewer.pal(4, "Blues") %>% rev,
+    brewer.pal(4, "Blues")[2:4] %>% rev,
+    brewer.pal(4, "BuGn")[2:4] %>% rev,
+    brewer.pal(4, "OrRd")[2:4] %>% rev,
     )
 
 group_by_filter <- function(data) {
@@ -104,7 +104,8 @@ generate_2d <- function(data, lims, plot_x_vals, plot_y_vals) {
             linetype = as_factor(.filter),
             fill = ..group..),
             alpha = 0.75,
-            col = "#000000") +
+            col = "#000000",
+            breaks = 1 - 2 * (1 - pnorm(1:3))) +
         scale_x_sci(name = NULL, limits = lims[[x_name]],
             labels =
                 if (vec_cast(plot_x_vals, logical()) %===% TRUE)
@@ -198,11 +199,11 @@ generate_density <- function(tbl, data, ranges) {
 
 fix_names <- function(name) {
     switch(name,
-        "lambda_p" = "$\\lambda_\\mathrm{p},~^\\circ$",
-        "phi_p" = "$\\phi_\\mathrm{p},~^\\circ$",
-        "omega" = "$\\Omega,~^\\circ$",
+        "lambda_p" = "$\\lambda_\\mathrm{p}, ^\\circ$",
+        "phi_p" = "$\\phi_\\mathrm{p}, ^\\circ$",
+        "omega" = "$\\Omega, ^\\circ$",
         "tau" = "$f_0$",
-        "i" = "$i,~^\\circ$",
+        "i" = "$i, ^\\circ$",
         "q_0" = "$q_0$,~\\%",
         "u_0" = "$u_0$,~\\%",
         glue_fmt_chr("${name}$"))
